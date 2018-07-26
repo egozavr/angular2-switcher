@@ -1,15 +1,15 @@
 {
-  "name": "angular2-switcher",
-  "displayName": "angular2-switcher",
-  "description": "Easily navigate to component's files in angular2 project.",
-  "version": "0.1.9",
-  "publisher": "infinity1207",
+  "name": "ngx-switcher",
+  "displayName": "ngx-switcher",
+  "description": "Easily navigate to component's files in angular2+ project.",
+  "version": "0.0.1",
+  "publisher": "egozavr",
   "icon": "images/logo.png",
   "engines": {
     "vscode": "^1.5.0"
   },
   "categories": [
-    "Languages",
+    "Programming Languages",
     "Other"
   ],
   "activationEvents": [
@@ -29,6 +29,10 @@
       {
         "command": "extension.switchTS",
         "title": "Open Corresponding typescript(ts) File"
+      },
+      {
+        "command": "extension.switchPug",
+        "title": "Open Corresponding .pug template(pug) File"
       },
       {
         "command": "extension.switchSpec",
@@ -52,15 +56,20 @@
         "mac": "shift+alt+u"
       },
       {
-        "command": "extension.switchSpec",
+        "command": "extension.switchPug",
         "key": "alt+p",
         "mac": "shift+alt+p"
+      },
+      {
+        "command": "extension.switchSpec",
+        "key": "alt+l",
+        "mac": "shift+alt+l"
       }
     ],
     "configuration": {
       "title": "Side by side",
       "properties": {
-        "angular2-swithcer.openSideBySide": {
+        "ngx-swithcer.openSideBySide": {
           "type": "boolean",
           "default": false,
           "description": "Open files side by side to Angular Component Typescript file."
@@ -81,7 +90,6 @@
     "@types/mocha": "^2.2.32"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/infinity1207/angular2-switcher"
+    "type": "git"
   }
 }

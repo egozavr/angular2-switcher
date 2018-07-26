@@ -2,62 +2,13 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { open } from "fs";
-import { TextEdit } from "vscode";
-
-const HTML_MODE: vscode.DocumentFilter = { language: "html", scheme: "file" };
-
-const HTML_TAGS: string[] = [
-  "html",
-  "head",
-  "body",
-  "script",
-  "style",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "div",
-  "p",
-  "a",
-  "img",
-  "span",
-  "strong",
-  "em",
-  "table",
-  "thead",
-  "tbody",
-  "th",
-  "tr",
-  "td",
-  "ul",
-  "li",
-  "ol",
-  "dl",
-  "dt",
-  "dd",
-  "form",
-  "input",
-  "label",
-  "button",
-  "class",
-  "id",
-  "src",
-  "href",
-  "click",
-  "mousemove"
-];
 
 function fileIs(path: string, ...items: string[]): boolean {
   if (!items) {
     return false;
   }
 
-  let lPath = path.toLowerCase();
-  for (var index = 0; index < items.length; index++) {
-    var element = items[index];
+  for (let index = 0; index < items.length; index++) {
     if (path.endsWith(items[index].toLowerCase())) {
       return true;
     }
@@ -85,6 +36,10 @@ function fileIsHtml(path: string) {
   return fileIs(path, ".html");
 }
 
+function fileIsPug(path: string) {
+  return fileIs(path, ".pug");
+}
+
 function fileIsSpec(path: string) {
   return fileIs(path, ".spec.ts");
 }
@@ -101,12 +56,12 @@ function getFileNameWithoutExtension(path: string) {
 }
 
 let isSplit = vscode.workspace
-  .getConfiguration("angular2-swithcer")
+  .getConfiguration("ngx-swithcer")
   .get<boolean>("openSideBySide");
 
 vscode.workspace.onDidChangeConfiguration(() => {
   isSplit = vscode.workspace
-    .getConfiguration("angular2-swithcer")
+    .getConfiguration("ngx-swithcer")
     .get("openSideBySide");
 });
 
@@ -164,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log(
-    'Congratulations, your extension "angular2-switcher" is now active!'
+    'Congratulations, your extension "ngx-switcher" is now active!'
   );
 
   // The command has been defined in the package.json file
@@ -193,10 +148,66 @@ export function activate(context: vscode.ExtensionContext) {
       if (
         fileIsTs(currentFile) ||
         fileIsStyle(currentFile) ||
-        fileIsSpec(currentFile)
+        fileIsSpec(currentFile) ||
+        fileIsPug(currentFile)
       ) {
         targetFile = fileNameWithoutExtension + ".html";
       } else if (fileIsHtml(currentFile)) {
+        if (previous && previous !== currentFile) {
+          if (previous.startsWith(fileNameWithoutExtension)) {
+            targetFile = previous;
+          } else {
+            targetFile = fileNameWithoutExtension + ".ts";
+          }
+        } else {
+          targetFile = fileNameWithoutExtension + ".ts";
+        }
+      } else {
+        return;
+      }
+
+      xOpenTextDocument(
+        targetFile,
+        isSplit ? vscode.ViewColumn.Two : editor.viewColumn
+      ).then(
+        () => {
+          previous = currentFile;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    }
+  );
+
+  let cmdSwitchPug = vscode.commands.registerCommand(
+    "extension.switchPug",
+    () => {
+      // The code you place here will be executed every time your command is executed
+
+      // Display a message box to the user
+      // vscode.window.showInformationMessage('Hello World!');
+
+      if (!vscode.workspace) {
+        return;
+      }
+
+      var editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+
+      var currentFile = editor.document.fileName;
+      let fileNameWithoutExtension = getFileNameWithoutExtension(currentFile);
+      var targetFile = "";
+      if (
+        fileIsTs(currentFile) ||
+        fileIsStyle(currentFile) ||
+        fileIsSpec(currentFile) ||
+        fileIsHtml(currentFile)
+      ) {
+        targetFile = fileNameWithoutExtension + ".pug";
+      } else if (fileIsPug(currentFile)) {
         if (previous && previous !== currentFile) {
           if (previous.startsWith(fileNameWithoutExtension)) {
             targetFile = previous;
@@ -242,7 +253,8 @@ export function activate(context: vscode.ExtensionContext) {
       if (
         fileIsHtml(currentFile) ||
         fileIsStyle(currentFile) ||
-        fileIsSpec(currentFile)
+        fileIsSpec(currentFile) ||
+        fileIsPug(currentFile)
       ) {
         targetFile = fileNameWithoutExtension + ".ts";
       } else if (fileIsTs(currentFile)) {
@@ -301,7 +313,8 @@ export function activate(context: vscode.ExtensionContext) {
       } else if (
         fileIsTs(currentFile) ||
         fileIsHtml(currentFile) ||
-        fileIsSpec(currentFile)
+        fileIsSpec(currentFile) ||
+        fileIsPug(currentFile)
       ) {
         targetFile.push(fileNameWithoutExtension + ".scss");
         targetFile.push(fileNameWithoutExtension + ".sass");
@@ -353,7 +366,8 @@ export function activate(context: vscode.ExtensionContext) {
       if (
         fileIsTs(currentFile) ||
         fileIsStyle(currentFile) ||
-        fileIsHtml(currentFile)
+        fileIsHtml(currentFile) ||
+        fileIsPug(currentFile)
       ) {
         targetFile = fileNameWithoutExtension + ".spec.ts";
       } else if (fileIsSpec(currentFile)) {
@@ -384,7 +398,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(cmdSwitchTemplate, cmdSwitchStyle, cmdSwitchTS);
+  context.subscriptions.push(cmdSwitchTemplate, cmdSwitchStyle, cmdSwitchTS, cmdSwitchPug);
 }
 
 function* gen(files: string[], viewColumn: vscode.ViewColumn) {
@@ -394,4 +408,4 @@ function* gen(files: string[], viewColumn: vscode.ViewColumn) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

@@ -1,18 +1,10 @@
-# angular2-switcher
+# ngx-switcher
 
-Easily navigate to `typescript(.ts)`|`template(.html)`|`style(.scss/.sass/.less/.css)` in angular2 project.
-
-See the [CHANGELOG](https://github.com/infinity1207/angular2-switcher/blob/master/ChANGELOG.md) for the latest changes
-
----
-
-[![Paypal Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.me/infinity20091207) a :coffee: and you will help me to keep working on this extension :wink:
+Easily navigate to `typescript(.ts)`|`template(.html)`|`pug-template(.pug)`|`style(.scss/.sass/.less/.css)` in angular2+ project.
 
 ## Usage
 
-* Go to the definition of variables/functions when press `f12` within html.
-
-* Switch `.ts`|`.html`|`.css`|`.spec.ts` fastly.
+* Switch `.ts`|`.html`|`.pug`|`.css`|`.spec.ts` fastly.
 
   * `alt+o`(Windows) `shift+alt+o`(macOS)
 
@@ -30,9 +22,9 @@ See the [CHANGELOG](https://github.com/infinity1207/angular2-switcher/blob/maste
     > if on `ts`: go to previous
 
   * `alt+p`(Windows) `shift+alt+p`(macOS)
+    > if on `.ts|.css|.html|.spec.ts`: go to .pug<br>
+    > if on `.pug`: go to previous
+
+  * `alt+l`(Windows) `shift+alt+l`(macOS)
     > if on `.ts|.css|.html`: go to spec.ts<br>
     > if on `.spec.ts`: go to previous
-
-## Source
-
-[GitHub](https://github.com/infinity1207/angular2-switcher)
